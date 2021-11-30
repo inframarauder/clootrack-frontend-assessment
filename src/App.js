@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Container, Spinner, Row, Col } from "react-bootstrap";
 import Chart from "./components/Chart/Chart";
 import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 
 const App = () => {
 	const [data, setData] = useState([]);
@@ -32,14 +33,19 @@ const App = () => {
 					<Spinner animation="border" style={{ color: "#e64918" }} />
 				</div>
 			) : (
-				<Container fluid>
+				<Container fluid className="chart-card-container">
 					<legend className="text-center my-4">Chart Dashboard</legend>
 					<hr />
-					{data.map((item, index) => (
-						<Chart data={item} index={index} key={index} />
-					))}
+					<Row>
+						{data.map((item, index) => (
+							<Col key={index} md={4}>
+								<Chart data={item} index={index} />
+							</Col>
+						))}
+					</Row>
 				</Container>
 			)}
+			<Footer />
 		</>
 	);
 };

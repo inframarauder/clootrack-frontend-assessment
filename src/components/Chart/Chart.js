@@ -6,6 +6,7 @@ import {
 	Bar,
 	PieChart,
 	Pie,
+	Cell,
 	Tooltip,
 	CartesianGrid,
 	XAxis,
@@ -19,6 +20,32 @@ const Chart = ({ data, index }) => {
 		return { value: item, name: `item_${index}` };
 	});
 
+	const RADIAN = Math.PI / 180;
+	const renderCustomizedLabel = ({
+		cx,
+		cy,
+		midAngle,
+		innerRadius,
+		outerRadius,
+		percent,
+	}) => {
+		const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+		const x = cx + radius * Math.cos(-midAngle * RADIAN);
+		const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+		return (
+			<text
+				x={x}
+				y={y}
+				fill="white"
+				textAnchor={x > cx ? "start" : "end"}
+				dominantBaseline="central"
+			>
+				{`${(percent * 100).toFixed(0)}%`}
+			</text>
+		);
+	};
+
 	const getRandomColor = () => {
 		const letters = "0123456789ABCDEF";
 		let color = "#";
@@ -29,7 +56,7 @@ const Chart = ({ data, index }) => {
 	};
 
 	return (
-		<Card className="chart-card">
+		<Card className="chart-card mb-3">
 			<Card.Title className="mx-4 my-4 p-1">
 				Char #{index + 1} ({data.type})
 			</Card.Title>
@@ -52,9 +79,15 @@ const Chart = ({ data, index }) => {
 							cx="50%"
 							cy="50%"
 							outerRadius={150}
+							labelLine={false}
+							label={renderCustomizedLabel}
 							fill={getRandomColor()}
 							label
-						/>
+						>
+							{chartData.map((entry, index) => (
+								<Cell key={`cell-${index}`} fill={getRandomColor()} />
+							))}
+						</Pie>
 						<Tooltip />
 					</PieChart>
 				)}
