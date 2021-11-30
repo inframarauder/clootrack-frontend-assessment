@@ -17,7 +17,7 @@ import { getRandomColor, renderCustomizedLabel } from "../../utils/chart-utils";
 import { updateChartData } from "../../redux/actions/data.actions";
 import "./Chart.css";
 
-const Chart = ({ chartData, index }) => {
+const Chart = ({ chartData, index, updateChartData }) => {
 	//modal state
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
@@ -25,7 +25,12 @@ const Chart = ({ chartData, index }) => {
 
 	//edit form change handler
 	const handleChange = (e) => {
-		const update = { name: e.target.name, value: e.target.value };
+		const update = {
+			chartIndex: index,
+			name: e.target.name,
+			value: parseInt(e.target.value),
+		};
+
 		updateChartData(update);
 	};
 
@@ -92,7 +97,7 @@ const Chart = ({ chartData, index }) => {
 									placeholder={item.name}
 									name={item.name}
 									value={item.value}
-									onChange={handleChange}
+									onChange={(e) => handleChange(e)}
 								/>
 							</Form.Group>
 						))}

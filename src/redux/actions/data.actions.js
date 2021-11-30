@@ -14,7 +14,6 @@ export const setChartData = () => async (dispatch) => {
 			item.elements = chartCompatibleData;
 		});
 
-		console.log(data);
 		dispatch({ type: "SET_CHART_DATA", payload: data });
 	} catch (error) {
 		console.error(error);

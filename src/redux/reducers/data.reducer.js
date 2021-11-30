@@ -20,11 +20,19 @@ function reducer(state = initialState, action) {
 		case "UPDATE_CHART_DATA":
 			return {
 				...state,
-				chartData: state.chartData.map((item) => {
-					if (item.name === payload.name) {
+				chartData: state.chartData.map((item, index) => {
+					if (index === payload.chartIndex) {
 						return {
 							...item,
-							value: payload.value,
+							elements: item.elements.map((element) => {
+								if (element.name === payload.name) {
+									return {
+										...element,
+										value: payload.value,
+									};
+								}
+								return element;
+							}),
 						};
 					}
 					return item;

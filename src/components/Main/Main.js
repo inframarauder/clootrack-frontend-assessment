@@ -11,8 +11,6 @@ const Main = ({ data, setChartData }) => {
 		setChartData();
 	}, [setChartData]);
 
-	console.log(data);
-
 	return (
 		<div className="main">
 			{data.loading ? (
