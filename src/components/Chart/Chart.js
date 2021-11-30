@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import {
 	ResponsiveContainer,
 	BarChart,
@@ -57,9 +57,15 @@ const Chart = ({ data, index }) => {
 
 	return (
 		<Card className="chart-card mb-3">
-			<Card.Title className="mx-4 my-4 p-1">
-				Char #{index + 1} ({data.type})
-			</Card.Title>
+			<p className="card-title">
+				<span>
+					Char #{index + 1} ({data.type})
+				</span>
+				<Button size="sm" variant="secondary">
+					<i className="fa fa-pencil mx-2"></i>
+					Edit
+				</Button>
+			</p>
 
 			<ResponsiveContainer width="100%" height={400}>
 				{data.type === "Bar" ? (
