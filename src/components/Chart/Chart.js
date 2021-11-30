@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, Button, Modal, Form } from "react-bootstrap";
 import {
 	ResponsiveContainer,
@@ -12,49 +12,29 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { connect } from "react-redux";
 import { getRandomColor, renderCustomizedLabel } from "../../utils/chart-utils";
+import { updateChartData } from "../../redux/actions/data.actions";
 import "./Chart.css";
 
-const Chart = ({ data, index }) => {
-	//chart state
-	const [chartData, setChartData] = useState([]);
-	useEffect(() => {
-		setChartData(
-			data.elements.map((item, index) => ({
-				name: `item_${index + 1}`,
-				value: item,
-			}))
-		);
-	}, [data.elements]);
-
+const Chart = ({ chartData, index }) => {
 	//modal state
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
-	const handleShow = (index) => setShow(true);
+	const handleShow = () => setShow(true);
 
 	//edit form change handler
 	const handleChange = (e) => {
-		const updatedChartData = chartData.map((item) => {
-			if (item.name === e.target.name) {
-				return {
-					...item,
-					value: parseInt(e.target.value),
-				};
-			}
-			return item;
-		});
-		console.log(updatedChartData);
-		setChartData(updatedChartData);
+		const update = { name: e.target.name, value: e.target.value };
+		updateChartData(update);
 	};
-
-	console.log(chartData);
 
 	return (
 		<>
 			<Card className="chart-card mb-3">
 				<p className="card-title">
 					<span>
-						Char #{index + 1} ({data.type})
+						Char #{index + 1} ({chartData.type})
 					</span>
 					<Button size="sm" variant="secondary" onClick={() => handleShow()}>
 						<i className="fa fa-pencil mx-2"></i>
@@ -63,8 +43,8 @@ const Chart = ({ data, index }) => {
 				</p>
 
 				<ResponsiveContainer width="100%" height={400}>
-					{data.type === "Bar" ? (
-						<BarChart data={chartData}>
+					{chartData.type === "Bar" ? (
+						<BarChart data={chartData.elements}>
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis
 								dataKey="name"
@@ -80,7 +60,7 @@ const Chart = ({ data, index }) => {
 							<Pie
 								dataKey="value"
 								isAnimationActive={true}
-								data={chartData}
+								data={chartData.elements}
 								cx="50%"
 								cy="50%"
 								outerRadius={150}
@@ -88,8 +68,8 @@ const Chart = ({ data, index }) => {
 								label={renderCustomizedLabel}
 								fill={getRandomColor()}
 							>
-								{chartData.map((entry, index) => (
-									<Cell key={`cell-${index}`} fill={getRandomColor()} />
+								{chartData.elements.map((entry) => (
+									<Cell key={`cell-${entry.name}`} fill={getRandomColor()} />
 								))}
 							</Pie>
 							<Tooltip />
@@ -104,7 +84,7 @@ const Chart = ({ data, index }) => {
 				<Modal.Body>
 					<p>Set values for the parameters as per your wish...</p>
 					<Form>
-						{chartData.map((item, index) => (
+						{chartData.elements.map((item, index) => (
 							<Form.Group key={`form-group-${index}`}>
 								<Form.Label>{`item_${index + 1}`}</Form.Label>
 								<Form.Control
@@ -126,4 +106,8 @@ const Chart = ({ data, index }) => {
 	);
 };
 
-export default Chart;
+const mapDispatchToProps = (dispatch) => ({
+	updateChartData: (update) => dispatch(updateChartData(update)),
+});
+
+export default connect(null, mapDispatchToProps)(Chart);
